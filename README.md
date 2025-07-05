@@ -1,108 +1,175 @@
-# 🚀 Flask Hello World (Dockerized)
+# 📨 Flask Message App with Docker
 
-This is a simple Flask "Hello World" application that runs inside a Docker container.
-Perfect for learning Docker basics and DevOps workflows!
+This is a simple Flask-based web app where users can submit their **name** and **message**, and it runs inside a Docker container. This project is ideal for beginners learning **Docker**, **Flask**, and **GitHub deployment**.
+
+---
+
+## 📌 Features
+
+* Simple HTML form to submit name & message.
+* Built with Flask (Python).
+* Containerized using Docker.
+* Can be accessed on other devices via IP.
+* Deployable on Docker Hub & GitHub.
+
+---
+
+## 🛠️ Tech Stack
+
+* 🐍 Python + Flask
+* 🐳 Docker
+* 🧰 Git & GitHub
 
 ---
 
 ## 📁 Project Structure
 
 ```
-.
-├── app.py               # Flask application
-├── Dockerfile           # Docker instructions
-├── requirements.txt     # Python dependencies
-└── README.md            # Project documentation
+flask-msg-docker/
+├── app.py              # Main Flask application
+├── Dockerfile          # Docker instructions
+├── page.html           # HTML form template
+├── requirements.txt    # Python dependencies
+└── README.md           # This file
 ```
 
 ---
 
-## ⚙️ Prerequisites
+## 🚀 Getting Started
 
-* ✅ Docker installed
-* ✅ Git installed
-* (Optional) Python installed for local testing
+Follow these steps to run the project on your system.
 
 ---
 
-## 🐍 Run Locally (Without Docker)
+### 1️⃣ Clone the Repository
 
 ```bash
-pip install -r requirements.txt
-python app.py
-```
-
-Then visit: [http://localhost:5000](http://localhost:5000)
-
----
-
-## 🐳 Run with Docker
-
-### ✅ Step 1: Build the Docker Image
-
-```bash
-docker build -t flask-hello .
-```
-
-### ✅ Step 2: Run the Docker Container
-
-```bash
-docker run -d -p 5000:5000 flask-hello
-```
-
-Then visit: [http://localhost:5000](http://localhost:5000)
-
----
-
-## 📦 Push to Docker Hub
-
-### ✅ Step 1: Tag the Image
-
-```bash
-docker tag flask-hello rohitrajj/flask-hello
-```
-
-### ✅ Step 2: Push to Docker Hub
-
-```bash
-docker push rohitrajj/flask-hello
-```
-
-Anyone can now pull and run it:
-
-```bash
-docker pull rohitrajj/flask-hello
-docker run -p 5000:5000 rohitrajj/flask-hello
+git clone https://github.com/Rohitt-Rajj/flask-msg-docker.git
+cd flask-msg-docker
 ```
 
 ---
 
-## 🌐 Push Project to GitHub
+### 2️⃣ Create `requirements.txt`
 
-### ✅ Step-by-Step
+Make sure this file contains:
 
-```bash
-git init
-git remote add origin https://github.com/rohitrajj/flask-hello-docker-hub.git
-git add .
-git commit -m "Initial commit: Dockerized Flask app"
-git push -u origin main
+```text
+Flask==2.3.2
 ```
 
 ---
 
-## 📸 Optional: Add GitHub Pages or Jenkins Pipeline (Next Steps)
+### 3️⃣ Create `app.py`
 
-* Set up GitHub Actions for Docker build & push
-* Deploy to AWS EC2, Azure, or Render
-* Add login feature or database integration
+```python
+from flask import Flask, request, render_template
+app = Flask(__name__)
+
+@app.route('/', methods=['GET'])
+def home():
+    return render_template('page.html')
+
+@app.route('/submit', methods=['POST'])
+def submit():
+    name = request.form['name']
+    message = request.form['message']
+    return f"<h1>Thanks, {name}!</h1><p>Your message: {message}</p>"
+
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', port=5000)
+```
+
+---
+
+### 4️⃣ Create `page.html`
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Leave a Message</title>
+</head>
+<body>
+    <h2>Leave a Message</h2>
+    <form action="/submit" method="POST">
+        <label for="name">Name:</label><br />
+        <input type="text" name="name" required /><br /><br />
+        <label for="message">Message:</label><br />
+        <textarea name="message" required></textarea><br /><br />
+        <button type="submit">Submit</button>
+    </form>
+</body>
+</html>
+```
+
+---
+
+### 5️⃣ Create `Dockerfile`
+
+```dockerfile
+FROM python:3.10-slim
+
+WORKDIR /app
+
+COPY requirements.txt .
+RUN pip install -r requirements.txt
+
+COPY . .
+
+EXPOSE 5000
+CMD ["python", "app.py"]
+```
+
+---
+
+### 6️⃣ Build Docker Image
+
+```bash
+docker build -t flask-msg-app .
+```
+
+---
+
+### 7️⃣ Run Docker Container
+
+```bash
+docker run -d -p 5000:5000 flask-msg-app
+```
+
+---
+
+### 🌐 Access the App
+
+Open browser and go to:
+
+```
+http://localhost:5000
+```
+
+To access from other devices on the same network:
+
+1. Run:
+
+```bash
+ip a  # Get your local IP (e.g., 192.168.X.X)
+```
+
+2. Then open:
+
+```
+http://<your-ip>:5000
+```
+
+
+```
 
 ---
 
 ## 🙇‍♂️ Author
 
 **Rohit Raj**
-DevOps Enthusiast | Cloud | Docker | Python
-📢 [rohitrajj@github.com](mailto:rohitrajj@github.com)
+DevOps & Cloud Enthusiast
+📧 [rohitrajj@github.com](mailto:rohitrajj@github.com)
 
 
